@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Saakh Business Report</title>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script src="https://d3js.org/d3.v7.min.js"></script>
+
+   <link rel="stylesheet" href="styles.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<script id="financial-data" type="application/json">
+  {{{json financialData}}}
+</script>
+
+<script id="employee-data" type="application/json">
+  {{{json employeeCounts}}}
+</script>
+
+<script id="loan-data" type="application/json">
+  {{{json loadData}}}
+</script>
+
+<body>
+   <div class="report-container">
+      <div class="header">
+         <div class="logo-wrapper">
+            <img src="{{logoBase64}}" alt="Saakh Logo">
+         </div>
+
+         <div class="header-content">
+            <h1>Saakh Business Report</h1>
+            <p>Comprehensive Business Analysis</p>
+         </div>
+      </div>
+
+      <!-- Business Summary Section -->
+      <div class="section">
+         <!-- <div class="section-header">
+				<img class="company-thumbnail" src="{{thumbnailUrl}}" alt="{{Comant-Image}}" width="50" height="50">
+				<h2>{{companyName}}</h2>
+				<div class="section-line"></div>
+			</div> -->
+
+         <div style="display: flex; align-items: center; margin-bottom: 25px; position: relative;">
+            <img src="{{thumbnailUrl}}" alt="{{Company-Image}}" width="50" height="50"
+               style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 2px solid #e2e8f0; vertical-align: middle;">
+            <h2 style="font-size: 1.8rem; color: #5055be; margin: 0;">{{companyName}}</h2>
+         </div>
+
+         <div
+            style="display: block; height: 3px; background: linear-gradient(90deg, #9fa0b3 0%, rgba(80, 85, 190, 0.3) 100%); border-radius: 2px; margin-top: 6px; margin-bottom: 5px;">
+         </div>
+
+         <div class="section-header">
+            <h2>Business Summary</h2>
+            <div class="section-line"></div>
+         </div>
+         <div class="section-body">
+            <div class="grid">
+               <div class="company-overview">
+                  <h3>Company Overview</h3>
+                  <p class="company-description">{{description}}</p>
+
+                  <div class="details-grid">
+                     <div class="detail-item">
+                        <h4>Company Type</h4>
+                        <p>{{constitutionOfBusiness}}</p>
+                     </div>
+                     <div class="detail-item">
+                        <h4>Established</h4>
+                        <p>{{dateOfRegistration}}</p>
+                     </div>
+                     <div class="detail-item">
+                        <h4>GST Number</h4>
+                        <p>{{gstin}}</p>
+                     </div>
+                     <div class="detail-item">
+                        <h4>Industry</h4>
+                        <p>{{businessType}}</p>
+                     </div>
+                     <div class="detail-item detail-item-full">
+                        <h4>Address</h4>
+                        <p>{{addresses.[0]}}</p>
+                     </div>
+                     <div class="detail-item detail-item-full">
+                        <h4>Contact Information</h4>
+                        {{#if phone}}
+                        <p class="contact-info"><i class="fa-solid fa-phone"></i> {{phone}}</p>
+                        {{/if}}
+                        {{#if email}}
+                        <p class="contact-info"><i class="fa-solid fa-envelope"></i> {{email}}</p>
+                        {{/if}}
+                        <div class="social-media">
+                           {{#if social_media.linkedin}}
+                           <div class="social-media-item">
+                              <i class="fab fa-linkedin"></i>
+                              <span>{{social_media.linkedin.followers}} followers</span>
+                           </div>
+                           {{/if}}
+                           {{#if social_media.youtube}}
+                           <div class="social-media-item">
+                              <i class="fab fa-youtube"></i>
+                              <span>{{social_media.youtube.followers}} followers</span>
+                           </div>
+                           {{/if}}
+                           {{#if social_media.instagram}}
+                           <div class="social-media-item">
+                              <i class="fab fa-instagram"></i>
+                              <span>{{social_media.instagram.followers}} followers</span>
+                           </div>
+                           {{/if}}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="right-column">
+                  <div class="company-rating">
+                     <h3>Company Rating</h3>
+                     <div class="rating-number">{{rating}}</div>
+                     <div class="rating-stars">
+                        {{#times rating}}⭐{{/times}}
+                     </div>
+                     <div class="rating-reviews">
+                        Based on {{reviewCount}} reviews
+                     </div>
+                  </div>
+
+                  <div class="primary-services">
+                     <h3>Primary Services</h3>
+                     <ul class="service-list">
+                        {{#each services}}
+                        <li><i class="fas fa-check-circle"></i>{{this}}</li>
+                        {{/each}}
+                     </ul>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- Key Directors Section -->
+      <div class="section">
+         <div class="section-header">
+            <h2>Key Directors</h2>
+            <div class="section-line"></div>
+         </div>
+         <div class="section-body">
+            <div class="directors-grid">
+               {{#each management.current}}
+               <div class="director-card">
+                  <div class="director-avatar">
+                     <i class="fas fa-user"></i>
+                  </div>
+                  <p class="director-name">{{name}}</p>
+                  <p class="director-role">{{designation}}</p>
+                  <p class="director-details">{{gender}} | DOB: {{dateOfBirth}}</p>
+               </div>
+               {{/each}}
+            </div>
+         </div>
+      </div>
+
+      <!-- GST Business Breakdown Section -->
+      <div class="section">
+         <div class="section-header">
+            <h2>GST Business Breakdowns</h2>
+            <div class="section-line"></div>
+         </div>
+         <div class="section-body">
+            <div class="breakdown-section">
+               <h3>GST Services Details</h3>
+               {{#if gstServicesDetails.length}}
+               <table class="min-w-full table-auto border border-gray-300">
+                  <thead class="bg-gray-100">
+                     <tr>
+                        <th class="px-4 py-2 text-left border-b">Description</th>
+                        <th class="px-4 py-2 text-left border-b">% of Total Business</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {{#each gstServicesDetails}}
+                     {{#if description}}
+                     <tr>
+                        <td class="px-4 py-2 border-b">{{description}}</td>
+                        <td class="px-4 py-2 border-b">{{asPercentOfTotalCount}}%</td>
+                     </tr>
+                     {{/if}}
+                     {{/each}}
+                  </tbody>
+               </table>
+               {{else}}
+               <p>No GST services data available</p>
+               {{/if}}
+            </div>
+
+            <!-- Goods breakdown section -->
+            <div class="breakdown-section">
+               <h3>GST Goods Details</h3>
+               {{#if gstGoodsDetails.length}}
+               <table class="min-w-full table-auto border border-gray-300">
+                  <thead class="bg-gray-100">
+                     <tr>
+                        <th class="px-4 py-2 text-left border-b">Section</th>
+                        <th class="px-4 py-2 text-left border-b">Description</th>
+                        <th class="px-4 py-2 text-left border-b">As % of Total Count</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {{#each gstGoodsDetails}}
+                     {{#if section}}
+                     <tr>
+                        <td class="px-4 py-2 border-b text-sm">{{section}}</td>
+                        <td class="px-4 py-2 border-b text-xs">{{description}}</td>
+                        <td class="px-4 py-2 border-b text-sm">{{asPercentOfTotalCount}}%</td>
+                     </tr>
+                     {{/if}}
+                     {{/each}}
+                  </tbody>
+               </table>
+               {{else}}
+               <p>No GST goods data available</p>
+               {{/if}}
+            </div>
+         </div>
+      </div>
+
+
+      <div class="section">
+         <div class="section-header">
+            <h2>Products</h2>
+            <div class="section-line"></div>
+         </div>
+         <div class="section-body">
+            <div class="products-grid">
+               {{#each products}}
+               <div class="product-card">
+                  <div class="product-header">
+                     <h4 class="product-name">{{name}}</h4>
+                  </div>
+                  <div class="product-details">
+                     <div class="product-detail-item">
+                        <span class="detail-label">Category</span>
+                        <span class="detail-value">{{category}}</span>
+                     </div>
+                     <div class="product-detail-item">
+                        <span class="detail-label">Description</span>
+                        <span class="detail-value">{{description}}</span>
+                     </div>
+                     {{#if image}}
+                     <div class="product-detail-item product-image">
+                        <img src="{{image}}" alt="{{name}}" width="100" height="100">
+                     </div>
+                     {{/if}}
+                  </div>
+               </div>
+               {{/each}}
+            </div>
+         </div>
+      </div>
+
+
+      <div class="section">
+         <div class="section-header">
+            <h2>Customer Reviews</h2>
+            <div class="section-line"></div>
+         </div>
+         <div class="section-body">
+            <div class="reviews-grid">
+               {{#each reviews}}
+               <div class="review-card">
+                  <div class="review-header">
+                     <img class="review-avatar" src="{{profile_photo_url}}" alt="{{author_name}}" width="50"
+                        height="50">
+                     <div class="review-meta">
+                        <a href="{{author_url}}" target="_blank" class="review-author">{{author_name}}</a>
+                        <span class="review-time">{{time}}</span>
+                        <span class="review-rating">⭐ {{rating}}</span>
+                     </div>
+                  </div>
+                  <p class="review-text">{{text}}</p>
+               </div>
+               {{/each}}
+            </div>
+         </div>
+      </div>
+
+
+      <div class="section">
+         <div class="section-header">
+            <h2>Company Images</h2>
+            <div class="section-line"></div>
+         </div>
+         <div class="section-body">
+            <div class="images-grid">
+               {{#each images}}
+               <div class="image-card">
+                  <img src="{{this}}" alt="Company Image" width="150" height="100">
+               </div>
+               {{/each}}
+            </div>
+         </div>
+      </div>
+
+      <div class="section">
+         <div class="section-header">
+            <h2>Competitors</h2>
+            <div class="section-line"></div>
+         </div>
+         <div class="section-body">
+            <div class="competitors-grid">
+               {{#each competitors}}
+               <div class="competitor-card">
+                  <div class="competitor-header">
+                     <h4 class="competitor-name">{{name}}</h4>
+                  </div>
+                  <div class="competitor-details">
+                     <div class="competitor-detail-item">
+                        <span class="detail-label">Name</span>
+                        <span class="detail-value">{{name}}</span>
+                     </div>
+                     <div class="competitor-detail-item">
+                        <span class="detail-label">Address</span>
+                        <span class="detail-value">{{address}}</span>
+                     </div>
+                     <div class="competitor-detail-item">
+                        <span class="detail-label">Rating</span>
+                        <span class="detail-value">{{rating}}</span>
+                     </div>
+                     <div class="competitor-detail-item">
+                        <span class="detail-label">Rating Count</span>
+                        <span class="detail-value">{{ratingCount}}</span>
+                     </div>
+                  </div>
+               </div>
+               {{/each}}
+            </div>
+         </div>
+      </div>
+
+
+
+      <!-- Financial Summary Section -->
+      <div class="section">
+         <div class="section-header">
+            <h2>Financial Summary</h2>
+            <div class="section-line"></div>
+         </div>
+         <div class="section-body">
+            <div class="financial-summary-grid">
+               <div class="financial-metric">
+                  <div class="metric-icon">
+                     <i class="fas fa-chart-line"></i>
+                  </div>
+                  <div class="metric-content">
+                     <h3>Current Revenue</h3>
+                     <p class="metric-value">₹ {{currentRevenue}} Cr</p>
+                     <p class="metric-period">FY {{currentFinancialYear}}</p>
+                  </div>
+               </div>
+
+               <div class="financial-metric">
+                  <div class="metric-icon">
+                     <i class="fas fa-money-bill-wave"></i>
+                  </div>
+                  <div class="metric-content">
+                     <h3>Total Loans</h3>
+                     <p class="metric-value">{{totalLoanAmount}}</p>
+                     <p class="metric-period">From {{loanProviderCount}} financial institutions</p>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Revenue Trend Chart -->
+            <div style="max-width: 1000px; margin: auto;">
+               <h3>Revenue Trend (5 Years)</h3>
+               <canvas id="revenueTrendChart" height="400"></canvas>
+            </div>
+
+
+
+
+            <!-- Loans & Financial Obligations -->
+            <!-- <div class="loans-section">
+
+                    <h3>Loans & Financial Obligations</h3>
+                    <div class="loans-grid">
+                        {{#each charges}}
+                        <div class="loan-card">
+                            <div class="loan-header">
+                                <h4 class="loan-amount" data-amount="{{amount}}">{{amount}}</h4>
+                                <span class="loan-date">{{dateOfCreation}}</span>
+                            </div>
+                            <div class="loan-details">
+                                <div class="loan-detail-item">
+                                    <span class="detail-label">Provider</span>
+                                    <span class="detail-value">{{chargeHolderName}}</span>
+                                </div>
+                                <div class="loan-detail-item">
+                                    <span class="detail-label">Amount</span>
+                                    <span class="detail-value amount-value" data-amount="{{amount}}">₹ {{amount}}</span>
+                                </div>
+                                <div class="loan-detail-item">
+                                    <span class="detail-label">Status</span>
+                                    <span class="detail-value status-{{status}}">{{status}}</span>
+                                </div>
+                                <div class="loan-detail-item">
+                                    <span class="detail-label">Issue Date</span>
+                                    <span class="detail-value">{{dateOfCreation}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div> -->
+
+
+            <!-- Loans & Financial Obligations -->
+            <div class="loans-section">
+               <h3>Loans & Financial Obligations</h3>
+               {{#if charges.length}}
+               <div class="loans-table-container">
+                  <table class="loans-table">
+                     <thead>
+                        <tr>
+                           <th>Provider</th>
+                           <th>Amount</th>
+                           <th>Status</th>
+                           <th>Issue Date</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {{#each charges}}
+                        <tr>
+                           <td>{{chargeHolderName}}</td>
+                           <td class="amount-value" data-amount="{{amount}}">₹ {{amount}}</td>
+                           <td><span class="status-{{status}}">{{status}}</span></td>
+                           <td>{{dateOfCreation}}</td>
+                        </tr>
+                        {{/each}}
+                     </tbody>
+                  </table>
+               </div>
+               {{else}}
+               <div class="no-data">No loan information available</div>
+               {{/if}}
+            </div>
+
+
+            <div>
+               <h3>Active Loans</h3>
+               <canvas id="loan-chart"></canvas>
+            </div>
+
+         </div>
+      </div>
+
+
+
+
+      <!-- Compliance Risks Section -->
+      <div class="section page-break">
+         <div class="section-header">
+            <h2>Compliance Risks</h2>
+            <div class="section-line"></div>
+         </div>
+         <div class="section-body">
+            <div class="alerts-section">
+               <h3>Alerts Summary</h3>
+               <div class="risk-indicators">
+                  <div class="risk-indicator severe">
+                     <div class="risk-number">{{alertCount.severe}}</div>
+                     <div class="risk-label">Severe</div>
+                  </div>
+                  <div class="risk-indicator high">
+                     <div class="risk-number">{{alertCount.high}}</div>
+                     <div class="risk-label">High</div>
+                  </div>
+                  <div class="risk-indicator medium">
+                     <div class="risk-number">{{alertCount.medium}}</div>
+                     <div class="risk-label">Medium</div>
+                  </div>
+                  <div class="risk-indicator low">
+                     <div class="risk-number">{{alertCount.low}}</div>
+                     <div class="risk-label">Low</div>
+                  </div>
+               </div>
+
+               <h4>Alerts List <span id="alertCountSummary"></span></h4>
+               <div class="alerts-grid">
+                  {{#each alertList}}
+                  <div class="alert-card {{#if exists}}active-alert{{/if}}">
+                     <div class="alert-header">
+                        <strong>{{alertName}}</strong>
+                        <span class="alert-severity">[{{severity}}]</span>
+                     </div>
+                     <div class="alert-details">
+                        {{#if exists}}
+                        <span class="alert-exists">Status: Exists</span>
+                        {{else}}
+                        <span class="alert-exists">Status: Not Found</span>
+                        {{/if}}
+                        {{#if lastUpdatedDate}}
+                        <span class="alert-date">Updated: {{lastUpdatedDate}}</span>
+                        {{/if}}
+                        <span>{{description}}</span>
+                        {{#if documentUrl}}
+                        <a href="{{documentUrl}}" target="_blank">View Document</a>
+                        {{/if}}
+                     </div>
+                  </div>
+                  {{/each}}
+               </div>
+            </div>
+
+            <div id="activeAlertNote" class="active-alert-note"></div>
+
+
+            <div class="gst-section">
+               <h3 class="section-title">GST Delay Analysis</h3>
+
+               {{#if statutoryRegistration}}
+               {{#each statutoryRegistration.gst}}
+               <div class="gst-info">
+                  <div class="gst-number">GSTIN: {{this.gstin}}</div>
+
+                  {{#if this.transactionDelays.length}}
+                  <table class="gst-table">
+                     <thead>
+                        <tr>
+                           <th>Return Year/Month</th>
+                           <th>Date of Filing</th>
+                           <th>Revised Due Date</th>
+                           <th>Days Delayed</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {{#each this.transactionDelays}}
+                        <tr>
+                           <td>{{this.returnYearMonth}}</td>
+                           <td>{{this.dateOfFiling}}</td>
+                           <td>{{this.revisedDueDateOfFiling}}</td>
+                           <td>{{this.noOfDaysOfDelay}}</td>
+                        </tr>
+                        {{/each}}
+                     </tbody>
+                  </table>
+                  {{else}}
+                  <div class="no-data">No transaction delay records for this GSTIN.</div>
+                  {{/if}}
+
+               </div>
+               {{/each}}
+               {{else}}
+               <div class="no-data">No GST records found.</div>
+               {{/if}}
+            </div>
+         </div>
+
+
+         <!-- <div class="employee-graph-container">
+                <h3 class="employee-graph-title">Employee Count Trend</h3>
+                <div id="employee-graph" class="graph-area"></div>
+            </div> -->
+
+         <div class="employee-graph-container">
+            <h3 class="employee-graph-title">Employee Count Trend</h3>
+            <canvas id="employee-graph" class="graph-area" width="800" height="400"></canvas>
+         </div>
+
+         <!-- Alert Categories Reference Table -->
+         <div class="section mt-20 page-break">
+            <div class="section-header">
+               <h2>Alert Categories Reference</h2>
+            </div>
+            <div class="section-body">
+               <p style="font-size: 12px; margin-bottom: 15px;">This comprehensive reference table details all
+                  potential alert categories and their descriptions used in the compliance risk assessment.</p>
+
+               <div style="overflow-x: auto;">
+                  <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
+                     <thead>
+                        <tr style="background: #f5f5f7; text-align: left;">
+                           <th style="padding: 8px; border-bottom: 1px solid #ddd; border-right: 1px solid #ddd;">
+                              Category</th>
+                           <th style="padding: 8px; border-bottom: 1px solid #ddd; border-right: 1px solid #ddd;">
+                              Alert Name</th>
+                           <th style="padding: 8px; border-bottom: 1px solid #ddd;">Description</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <!-- Defaults & Frauds Category -->
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; font-weight: bold; background-color: #fafafa; vertical-align: top;"
+                              rowspan="10">Defaults & Frauds</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              GST Fraud</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">These particular entities
+                              were caught doing frauds like invoice-related fraud, tax evasion, fake input tax
+                              credit claims, etc., as per various news articles.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              NSE Defaulter</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Members of NSE declared as
+                              defaulters under various bylaws.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              BSE Defaulter</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Members declared as
+                              defaulters by BSE.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              MCA Director Defaulter</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Director in a defaulting
+                              company as per MCA.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              EPF Transaction Default</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Default due to no Provident
+                              Fund Payment deposited by the Entity.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              TDS Payment Default</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Default in depositing TDS
+                              Payments by the Entity.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              IEC In Denied Entity List</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Import Export Code of the
+                              Entity is in the Denied Entity List.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              GST Transaction Default</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Default in GSTR1/GSTR3B
+                              filings by Entity.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Wilful Defaulter</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Entity reported as Wilful
+                              Defaulter by Bank due to default in repayment of loan despite having the
+                              capacity to repay.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Offshore Leak</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Reports by the
+                              International Consortium of Investigative Journalists disclosing details of
+                              offshore companies, foundations, and trusts.</td>
+                        </tr>
+
+                        <!-- Management Risks Category -->
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; font-weight: bold; background-color: #fafafa; vertical-align: top;"
+                              rowspan="5">Management Risks</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Sfo Proclaimed Offender</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Entity and its associates
+                              declared are proclaimed offenders by SFIO</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Sfo Convicted Director</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Directors convicted as per
+                              SFIO Investigations</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              MCA Director Under Prosecution</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Prosecution initiated by
+                              the MCA against a KMP or Director</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Proclaimed Offender</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Pronounced as Proclaimed
+                              Offender under Section 82 of the Criminal Procedure Code.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Director Resignation(s)</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Director/KMP resignation
+                              occurring in the year immediately preceding the date on which the company is
+                              searched for.</td>
+                        </tr>
+
+                        <!-- Insolvency & Business Closure Category -->
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; font-weight: bold; background-color: #fafafa; vertical-align: top;"
+                              rowspan="10">Insolvency & Business Closure</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Dormant</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">A company registered under
+                              section 455 for a future project or holding assets, having no significant
+                              accounting transactions.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Vanishing</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Company deemed vanishing if
+                              it fails to file financials or maintain its registered office.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Shell</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Company marked as a Shell
+                              company by regulatory authorities.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Company Under Liquidation</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Company identified as under
+                              liquidation.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              IEC Suspended</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Import Export Code of the
+                              Entity stands suspended.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              IEC Cancelled</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Import Export Code of the
+                              Entity stands cancelled.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              GST Under Cancellation</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">GSTIN registration is under
+                              cancellation as per the source.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              GST Cancelled</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">GST Registration is
+                              cancelled as per Source.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              IBBI</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Entities in the process of
+                              insolvency and bankruptcy proceedings as ordered by National Company Law
+                              Tribunal or the Insolvency & Bankruptcy Board of India.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              BIFR</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Company records on the
+                              Board for Industrial and Financial Reconstruction, mainly for sick or
+                              consistently loss-making companies.</td>
+                        </tr>
+
+                        <!-- MCA Non-Compliances Category -->
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; font-weight: bold; background-color: #fafafa; vertical-align: top;"
+                              rowspan="3">MCA Non-Compliances</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Company Under Prosecution</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Prosecution initiated by
+                              the MCA against a Company</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Company Under Strike Off</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Company Status identified
+                              as being 'Under the process of Striking Off'.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Company Striked Off</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Company Status identified
+                              as being 'Struck Off'.</td>
+                        </tr>
+
+                        <!-- BSE & NSE compliances Category -->
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; font-weight: bold; background-color: #fafafa; vertical-align: top;"
+                              rowspan="13">BSE & NSE Compliances</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              SEBI Debarred</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Consolidated list of
+                              entities debarred by Securities Exchange Board of India from trading in the
+                              securities market since January 2007.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              NSE Suspended</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Entities suspended by NSE
+                              if found guilty of contravention, non-compliance, disobedience, disregard, or
+                              evasion of any of the Bye Laws, Rules, and Regulations.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              NSE Expelled</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Members expelled by NSE
+                              under various Bylaws.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              NSE Under ASM Surveillance</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Entities under ASM
+                              Surveillance by NSE to protect the interest of investors.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              NSE Under GSM Surveillance</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Entities under GSM
+                              Surveillance by NSE in order to protect the interest of the investors.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              NSE Company Suspended</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Members suspended by NSE on
+                              SEBI orders due to failure in meeting the capital adequacy requirements.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              NSE Company Suspended Non Compliance</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Members suspended by NSE
+                              for non-compliance with regulations.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              NSE Company Delisted</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Companies delisted by NSE
+                              where shares are removed from the stock exchange permanently.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              BSE Expelled</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Members expelled by BSE
+                              under various Bylaws.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              BSE Member Inactive</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Members of BSE who have
+                              been inactive.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              BSE Disciplinary Action</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Violation/non-compliance by
+                              brokers/listed companies results in disciplinary action.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              BSE Under GSM Surveillance</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Entities under GSM
+                              Surveillance by BSE to protect the interest of investors.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Suspended At Stock Exchange</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Company Status identified
+                              as 'Suspended at Stock Exchange'.</td>
+                        </tr>
+
+                        <!-- Return Filing Delays Category -->
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; font-weight: bold; background-color: #fafafa; vertical-align: top;"
+                              rowspan="3">Return Filing Delays</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              EPF Transaction Delay</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Delay in depositing
+                              Provident Fund Payments by the Entity as per Source.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              TDS Payment Delay</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Delay in depositing TDS
+                              Payments by the Entity.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              GST Transaction Delay</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Delay in GSTR1/GSTR3B
+                              filings by Entity, filings made post due date.</td>
+                        </tr>
+
+                        <!-- High Risk Checks Category -->
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; font-weight: bold; background-color: #fafafa; vertical-align: top;"
+                              rowspan="4">High Risk Checks</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Credit Rating Outlook Negative</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">A rating agency has given a
+                              negative outlook for the long-term debt instruments of the entity.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Credit Rating Withdrawn</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Entity's credit rating is
+                              withdrawn by Rating Agency due to factors like repayment of debt instruments
+                              previously rated, request of the entity, winding up, merger, or failure to
+                              provide requisite material information.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Credit Rating Suspended</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Indicates that the Entity
+                              has failed to provide important information regarding its finances, liquidity,
+                              operations, etc., which is required to assess and monitor repayment capacity.
+                           </td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Credit Rating Downgraded</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Entity's credit rating
+                              downgraded from previous ratings by Rating Agency.</td>
+                        </tr>
+
+                        <!-- Medium Risk Checks Category -->
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; font-weight: bold; background-color: #fafafa; vertical-align: top;"
+                              rowspan="6">Medium Risk Checks</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Charge Closed At SASF</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Charge closed by Stressed
+                              Assets Stabilisation Fund as disclosed by the Entity on MCA.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Charge Open At SASF</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Charge created by Stressed
+                              Assets Stabilisation Fund as disclosed by the Entity on MCA.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Charge Closed At ARC</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Closed charge on Entity's
+                              movable and immovable assets created by an Asset Reconstruction Company.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Charge Open At ARC</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Open charge on Entity's
+                              movable and immovable assets created by an Asset Reconstruction Company.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Credit Watch With Negative Implication</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">The entity is being kept
+                              under a watch with negative implications over a short time period by a rating
+                              agency.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Entity Non-Cooperative</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Indicates non-cooperation
+                              by Entity in providing requisite financial information to the Rating Agency.
+                           </td>
+                        </tr>
+
+                        <!-- Low Importance Checks Category -->
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; font-weight: bold; background-color: #fafafa; vertical-align: top;"
+                              rowspan="9">Low Importance Checks</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              PAN Inactive</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">The status of PAN has been
+                              reported as inactive by the source.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              LEI Registration Retired</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">The entity has ceased
+                              operation for a reason other than a merger.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              LEI Registration Lapsed</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">When an LEI record goes 12
+                              months without being renewed, it is marked as Lapsed.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              EPF Closed</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Employees Provident Fund
+                              Registration is closed as per Source.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              TAN Inactive</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">TAN Registration of the
+                              Entity is inactive as per Source.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              GST Provisional</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">GST Registration noted to
+                              be Provisional.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Domain Invalid Email</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Invalid Email Domain as
+                              disclosed by the Entity on MCA.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Disposable Invalid Email</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Temporary/Disposable Email
+                              ID provided by the Entity on MCA.</td>
+                        </tr>
+                        <tr>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">
+                              Generic Address</td>
+                           <td style="padding: 8px; border-bottom: 1px solid #eee;">Incomplete or vague
+                              Registered Address provided by the Entity.</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+
+               <div style="margin-top: 15px; font-size: 11px; color: #666;">
+                  <p>Note: This alert reference guide is for informational purposes. The presence of any alert may
+                     indicate elevated risk and should be examined in context of the overall business assessment.
+                  </p>
+               </div>
+            </div>
+         </div>
+
+         <!-- Footer -->
+         <div class="footer">
+            <p>Report generated on {{currentDate}}</p>
+            <div class="footer-logo">
+               <img src="{{logoBase64}}" alt="Saakh Logo">
+            </div>
+         </div>
+      </div>
+
+      <script src="chart.js"></script>
+</body>
+
+</html>

@@ -1,3 +1,4 @@
+const functions = require('firebase-functions');
 const express = require('express');
 // const cors = require('cors');
 const helmet = require('helmet');
@@ -8,7 +9,7 @@ const companyRoutes = require('./routes/companyRoutes');
 const logger = require('./utils/logger');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.APP_PORT  || 3000;
 
 // Initialize Firebase on startup
 try {
@@ -165,4 +166,5 @@ process.on('uncaughtException', (error) => {
   process.exit(1);
 });
 
-module.exports = app;
+// module.exports = app;
+// exports.saakh_make_app = functions.https.onRequest(app);
