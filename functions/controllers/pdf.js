@@ -43,7 +43,7 @@ const downloadPdf = async (req, res) => {
         Handlebars.registerHelper("json", function (context) {
             return JSON.stringify(context);
         });
-        console.log("company :: ", company);
+        // console.log("company :: ", company);
 
         const gstEntry = company.statutoryRegistration?.gst[0];
 
