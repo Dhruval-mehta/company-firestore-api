@@ -26,43 +26,44 @@
 
 <body>
    <!-- Cover Page - Insert this right after <body> tag -->
-<div class="cover-page" style="page-break-after: always; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: white; padding: 40px;">
-   
-   <!-- Logo Section -->
-   <div class="logo-wrapper" style="margin-bottom: 30px;">
-      <img src="{{logoBase64}}" alt="Saakh Logo" style="width: 80px; height: 80px;">
-   </div>
-   
-   <!-- Main Title -->
-   <h1 style="font-size: 2.5rem; color: #333; margin-bottom: 20px; font-weight: bold;">
-      Saakh Report
-   </h1>
-   
-   <!-- Company Name -->
-   <h2 style="font-size: 1.8rem; color: #5055be; margin: 0 0 40px 0;">
-      {{companyName}}
-   </h2>
-   
-   <!-- Generated Date -->
-   <div style="margin-bottom: 60px;">
-      <p style="font-size: 1.1rem; color: #666; margin: 0;">
-         Generated on {{currentDate}}
-      </p>
-   </div>
-   
-   <!-- Data Sources Grid -->
-   
-<!-- Data Sources Image Section -->
-<!-- <div class="data-sources-image" style="max-width: 600px; width: 100%; margin-top: 40px; display: flex; justify-content: center;">
+   <div class="cover-page"
+      style="page-break-after: always; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: white; padding: 40px;">
+
+      <!-- Logo Section -->
+      <div class="logo-wrapper" style="margin-bottom: 30px;">
+         <img src="{{logoBase64}}" alt="Saakh Logo" style="width: 80px; height: 80px;">
+      </div>
+
+      <!-- Main Title -->
+      <h1 style="font-size: 2.5rem; color: #333; margin-bottom: 20px; font-weight: bold;">
+         Saakh Report
+      </h1>
+
+      <!-- Company Name -->
+      <h2 style="font-size: 1.8rem; color: #5055be; margin: 0 0 40px 0;">
+         {{companyName}}
+      </h2>
+
+      <!-- Generated Date -->
+      <div style="margin-bottom: 60px;">
+         <p style="font-size: 1.1rem; color: #666; margin: 0;">
+            Generated on {{currentDate}}
+         </p>
+      </div>
+
+      <!-- Data Sources Grid -->
+
+      <!-- Data Sources Image Section -->
+      <!-- <div class="data-sources-image" style="max-width: 600px; width: 100%; margin-top: 40px; display: flex; justify-content: center;">
    <img src="data:image/png;base64,{{dataSourcesImageBase64}}" alt="Data Sources" style="width: 100%; max-width: 500px; height: auto; border-radius: 8px;">
 </div> -->
 
-<div class="data-sources-image" style=" width: 100%; margin-top: 40px; display: flex; justify-content: center;">
-   <img src="{{bgBase64}}" alt="Data Sources" style="width: 100%;  height: auto; border-radius: 8px;">
-</div>
+      <div class="data-sources-image" style=" width: 100%; margin-top: 40px; display: flex; justify-content: center;">
+         <img src="{{bgBase64}}" alt="Data Sources" style="width: 100%;  height: auto; border-radius: 8px;">
+      </div>
 
-</div>
-<!-- End Cover Page -->
+   </div>
+   <!-- End Cover Page -->
    <div class="report-container">
       <div class="header">
          <div class="logo-wrapper">
@@ -84,8 +85,14 @@
 			</div> -->
 
          <div style="display: flex; align-items: center; margin-bottom: 25px; position: relative;">
+            {{#if thumbnailUrl}}
             <img src="{{thumbnailUrl}}" alt="{{Company-Image}}" width="50" height="50"
                style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 2px solid #e2e8f0; vertical-align: middle;">
+            {{else}}
+            <div style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #5055be; font-weight: bold; border: 2px solid #e2e8f0; vertical-align: middle;">
+              {{companyName.[0]}}
+            </div>
+            {{/if}}
             <h2 style="font-size: 1.8rem; color: #5055be; margin: 0;">{{companyName}}</h2>
          </div>
 
@@ -94,65 +101,67 @@
          </div>
 
          <div class="section-header">
-            <h2>Business Summary</h2>
+            <h2>Business Profile</h2>
             <div class="section-line"></div>
          </div>
          <div class="section-body">
             <div class="grid">
                <div class="company-overview">
-                  <h3>Company Overview</h3>
+                  <h3>Business Description</h3>
                   <p class="company-description">{{description}}</p>
 
                   <div class="details-grid">
+                     {{#if constitutionOfBusiness}}
                      <div class="detail-item">
                         <h4>Company Type</h4>
                         <p>{{constitutionOfBusiness}}</p>
                      </div>
+                     {{/if}}
+                     {{#if dateOfRegistration}}
                      <div class="detail-item">
                         <h4>Established</h4>
                         <p>{{dateOfRegistration}}</p>
                      </div>
+                     {{/if}}
+                     {{#if gstin}}
                      <div class="detail-item">
                         <h4>GST Number</h4>
                         <p>{{gstin}}</p>
                      </div>
+                     {{/if}}
+                     {{#if businessType}}
                      <div class="detail-item">
                         <h4>Industry</h4>
                         <p>{{businessType}}</p>
                      </div>
+                     {{/if}}
                      <div class="detail-item detail-item-full">
                         <h4>Address</h4>
                         <p>{{addresses.[0]}}</p>
                      </div>
                      <div class="detail-item detail-item-full">
                         <h4>Contact Information</h4>
+
                         {{#if phone}}
-                        <p class="contact-info"><i class="fa-solid fa-phone"></i> {{phone}}</p>
-                        {{/if}}
-                        {{#if email}}
-                        <p class="contact-info"><i class="fa-solid fa-envelope"></i> {{email}}</p>
-                        {{/if}}
-                        <div class="social-media">
-                           {{#if social_media.linkedin}}
-                           <div class="social-media-item">
-                              <i class="fab fa-linkedin"></i>
-                              <span>{{social_media.linkedin.followers}} followers</span>
-                           </div>
-                           {{/if}}
-                           {{#if social_media.youtube}}
-                           <div class="social-media-item">
-                              <i class="fab fa-youtube"></i>
-                              <span>{{social_media.youtube.followers}} followers</span>
-                           </div>
-                           {{/if}}
-                           {{#if social_media.instagram}}
-                           <div class="social-media-item">
-                              <i class="fab fa-instagram"></i>
-                              <span>{{social_media.instagram.followers}} followers</span>
-                           </div>
-                           {{/if}}
+                        <div class="contact-block">
+                          <h5 style="margin-bottom: 4px; margin-top: 10px;">Phone</h5>
+                          {{#each phone}}
+                          <p class="contact-info" style="margin-bottom: 6px;"><i class="fa-solid fa-phone"></i> {{this}}</p>
+                          {{/each}}
                         </div>
-                     </div>
+                        {{/if}}
+
+                        {{#if email}}
+                        <div class="contact-block">
+                          <h5 style="margin-bottom: 4px; margin-top: 10px;">Email</h5>
+                          {{#each email}}
+                          <p class="contact-info" style="margin-bottom: 6px;"><i class="fa-solid fa-envelope"></i> {{this}}</p>
+                          {{/each}}
+                        </div>
+                        {{/if}}
+
+                      </div>
+
                   </div>
                </div>
                <div class="right-column">
@@ -167,14 +176,54 @@
                      </div>
                   </div>
 
+                  {{#if services}}
                   <div class="primary-services">
                      <h3>Primary Services</h3>
                      <ul class="service-list">
-                        {{#each services}}
-                        <li><i class="fas fa-check-circle"></i>{{this}}</li>
-                        {{/each}}
+                       {{#isArray services}}
+                         {{#each services}}
+                         <li><i class="fas fa-check-circle"></i>{{this}}</li>
+                         {{/each}}
+                       {{else}}
+                         {{#split services ','}}
+                         <li><i class="fas fa-check-circle"></i>{{this}}</li>
+                         {{/split}}
+                       {{/isArray}}
                      </ul>
                   </div>
+                  {{/if}}
+
+                  {{#if social_media}}
+                  <div class="social-media-cards" style="margin-top: 18px;">
+                    <h3 style="margin-bottom: 10px;">Social Media</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                      {{#each social_media}}
+                        <div class="social-media-card" style="background: #f8f9fa; border-radius: 8px; box-shadow: 0 1px 4px rgba(80,85,190,0.07); padding: 14px 18px; min-width: 150px; display: flex; align-items: center;">
+                          {{#if (eq platform 'LinkedIn')}}
+                            <i class="fab fa-linkedin" style="font-size: 1.5rem; color: #0077b5; margin-right: 10px;"></i>
+                          {{/if}}
+                          {{#if (eq platform 'YouTube')}}
+                            <i class="fab fa-youtube" style="font-size: 1.5rem; color: #ff0000; margin-right: 10px;"></i>
+                          {{/if}}
+                          {{#if (eq platform 'Instagram')}}
+                            <i class="fab fa-instagram" style="font-size: 1.5rem; color: #e4405f; margin-right: 10px;"></i>
+                          {{/if}}
+                          <div style="flex: 1;">
+                            <div style="font-weight: 600; font-size: 1rem; text-transform: capitalize;">{{platform}}</div>
+                            <a href="{{url}}" target="_blank" style="text-decoration: none; color: #5055be; font-size: 0.98rem;">
+                              {{#if followers}}
+                                <span>{{followers}} followers</span>
+                              {{/if}}
+                              {{#unless followers}}
+                                <span>View</span>
+                              {{/unless}}
+                            </a>
+                          </div>
+                        </div>
+                      {{/each}}
+                    </div>
+                  </div>
+                  {{/if}}
                </div>
             </div>
          </div>
@@ -183,7 +232,7 @@
       <!-- Key Directors Section -->
       <div class="section">
          <div class="section-header">
-            <h2>Key Directors</h2>
+            <h2>Management Details</h2>
             <div class="section-line"></div>
          </div>
          <div class="section-body">
@@ -303,7 +352,7 @@
 
       <div class="section">
          <div class="section-header">
-            <h2>Customer Reviews</h2>
+            <h2>Reviews</h2>
             <div class="section-line"></div>
          </div>
          <div class="section-body">
@@ -422,10 +471,10 @@
 
 
             <!-- Loans & Financial Obligations -->
-            <!-- <div class="loans-section">
+            <!-- <div class="loans-section>
 
                     <h3>Loans & Financial Obligations</h3>
-                    <div class="loans-grid">
+                    <div class="loans-grid>
                         {{#each charges}}
                         <div class="loan-card">
                             <div class="loan-header">
@@ -507,7 +556,7 @@
          </div>
          <div class="section-body">
             <div class="alerts-section">
-               <h3>Alerts Summary</h3>
+               <h3>Active Non-Compliances</h3>
                <div class="risk-indicators">
                   <div class="risk-indicator severe">
                      <div class="risk-number">{{alertCount.severe}}</div>
@@ -608,6 +657,38 @@
             <h3 class="employee-graph-title">Employee Count Trend</h3>
             <canvas id="employee-graph" class="graph-area" width="800" height="400"></canvas>
          </div>
+
+         {{#if creditRatings.length}}
+         <div class="section" style="margin-top: 30px;">
+           <div class="section-header">
+             <h2>Credit Ratings</h2>
+             <div class="section-line"></div>
+           </div>
+           <div class="section-body">
+             <table class="min-w-full table-auto border border-gray-300">
+               <thead class="bg-gray-100">
+                 <tr>
+                   <th class="px-4 py-2 text-left border-b">Month</th>
+                   <th class="px-4 py-2 text-left border-b">Rating</th>
+                   <th class="px-4 py-2 text-left border-b">Agency</th>
+                   <th class="px-4 py-2 text-left border-b">Amount</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 {{#each creditRatings}}
+                 <tr>
+                   <td class="px-4 py-2 border-b">{{dateOfIssuance}}</td>
+                   <td class="px-4 py-2 border-b">{{rating}}</td>
+                   <td class="px-4 py-2 border-b">{{ratingAgency}}</td>
+                   <td class="px-4 py-2 border-b">{{amount}}</td>
+                 </tr>
+                 {{/each}}
+               </tbody>
+             </table>
+           </div>
+         </div>
+         {{/if}}
+
 
          <!-- Alert Categories Reference Table -->
          <div class="section mt-20 page-break">
@@ -1077,6 +1158,11 @@
                <img src="{{logoBase64}}" alt="Saakh Logo">
             </div>
          </div>
+      </div>
+
+      <!-- Footer for every page -->
+      <div class="pdf-footer" style="position: fixed; left: 0; right: 0; bottom: 0; width: 100vw; text-align: center; font-size: 11px; color: #888; z-index: 10000; pointer-events: none; user-select: none; padding-bottom: 18px; margin-bottom: 0; background: transparent; letter-spacing: 0.02em;">
+        <span style="background: #fff; padding: 0 10px; border-radius: 4px; box-shadow: 0 1px 4px rgba(80,85,190,0.04); display: inline-block;">Copyright © 2025, Mysa Technology Private Limited, All Rights Reserved</span>
       </div>
 
       <script src="chart.js"></script>

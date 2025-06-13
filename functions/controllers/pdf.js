@@ -2,9 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const Handlebars = require('handlebars');
 const chromium = require('chrome-aws-lambda');
+// const puppeteer = require('puppeteer'); // Changed from puppeteer-core to puppeteer
 const puppeteer = require('puppeteer-core');
 const { getFirestore } = require('../config/firebase');
-const alertsListJson= require('../utils/alertJson');
+const alertsListJson = require('../utils/alertJson');
 
 const downloadPdf = async (req, res) => {
     try {
@@ -33,7 +34,7 @@ const downloadPdf = async (req, res) => {
         const logoPath = path.join(__dirname, "../assets/images/saakh_1.jpg");
         const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
 
-         // Read the logo file and convert to base64
+        // Read the logo file and convert to base64
         const bgpath = path.join(__dirname, "../assets/images/bg.jpeg");
         const bgBase64 = fs.readFileSync(bgpath, { encoding: 'base64' });
 
@@ -45,8 +46,29 @@ const downloadPdf = async (req, res) => {
             return accum;
         });
 
+        Handlebars.registerHelper('isArray', function (value, options) {
+            if (Array.isArray(value)) {
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
+            }
+        });
+
+        Handlebars.registerHelper('split', function (str, delimiter, options) {
+            if (typeof str === 'string') {
+                return (str.split(delimiter) || []).map(function (item) {
+                    return options.fn(item.trim());
+                }).join('');
+            } else {
+                return options.inverse(this);
+            }
+        });
+
         Handlebars.registerHelper("json", function (context) {
             return JSON.stringify(context);
+        });
+        Handlebars.registerHelper('eq', function (a, b) {
+            return a === b;
         });
         // console.log("company :: ", company);
 
@@ -307,28 +329,29 @@ const downloadPdf = async (req, res) => {
             domain: company.domain,
             owner: company.owner,
             addresses: company.address,
-            phone: company.phone?.join(", "),
-            email: company.email?.join(", "),
+            phone: company.phone,
+            email: company.email,
             currentDate: new Date().toLocaleDateString(),
             logoBase64: `data:image/jpeg;base64,${logoBase64}`,
             bgBase64: `data:image/jpeg;base64,${bgBase64}`,
             rating: company.googleRating,
             reviewCount: company.googleRatingCount,
             services: company.natureOfBusiness,
-            social_media: {
-                linkedin: {
-                    url: Array.isArray(company.social_media) ? company.social_media.find(s => s.platform === "LinkedIn")?.url : undefined,
-                    followers: Array.isArray(company.social_media) ? (company.social_media.find(s => s.platform === "LinkedIn")?.followers || 0) : 0
-                },
-                youtube: {
-                    url: Array.isArray(company.social_media) ? company.social_media.find(s => s.platform === "YouTube")?.url : undefined,
-                    followers: Array.isArray(company.social_media) ? (company.social_media.find(s => s.platform === "YouTube")?.followers || 0) : 0
-                },
-                instagram: {
-                    url: Array.isArray(company.social_media) ? company.social_media.find(s => s.platform === "Instagram")?.url : undefined,
-                    followers: Array.isArray(company.social_media) ? (company.social_media.find(s => s.platform === "Instagram")?.followers || 0) : 0
-                }
-            },
+            // social_media: {
+            //     linkedin: {
+            //         url: Array.isArray(company.social_media) ? company.social_media.find(s => s.platform === "LinkedIn")?.url : undefined,
+            //         followers: Array.isArray(company.social_media) ? (company.social_media.find(s => s.platform === "LinkedIn")?.followers || 0) : 0
+            //     },
+            //     youtube: {
+            //         url: Array.isArray(company.social_media) ? company.social_media.find(s => s.platform === "YouTube")?.url : undefined,
+            //         followers: Array.isArray(company.social_media) ? (company.social_media.find(s => s.platform === "YouTube")?.followers || 0) : 0
+            //     },
+            //     instagram: {
+            //         url: Array.isArray(company.social_media) ? company.social_media.find(s => s.platform === "Instagram")?.url : undefined,
+            //         followers: Array.isArray(company.social_media) ? (company.social_media.find(s => s.platform === "Instagram")?.followers || 0) : 0
+            //     }
+            // },
+            social_media: socialMediaArr,
             currentRevenue: currentRevenue,
             currentFinancialYear: currentFinancialYear,
             reviews: reviewsArr.map((r) => ({
@@ -388,11 +411,8 @@ const downloadPdf = async (req, res) => {
             creditRatings: company.creditRatings?.map(rating => ({
                 dateOfIssuance: rating.dateOfIssuance,
                 amount: rating.amount,
-                instrument: rating.instrument,
-                rating: rating.rating,
+                rating: rating.rating_,
                 ratingAgency: rating.ratingAgency,
-                ratingTerm: rating.ratingTerm,
-                ratingRationale: rating.ratingRationale
             })) || [],
             competitors: competitorsArr.map(competitor => ({
                 name: competitor.name,
@@ -470,13 +490,43 @@ const downloadPdf = async (req, res) => {
                 businessType: company.businessType
             }
         };
-        console.log("alertCount : ", templateData.alertCount);
+        console.log("alertCount : ", templateData.kid);
 
         const compiledTemplate = Handlebars.compile(template);
         let html = compiledTemplate(templateData);
         html = html.replace('</head>', `<style>${cssContent}</style></head>`);
         html = html.replace('</body>', `<script>${jsContent}</script></body>`);
 
+        // Inject watermark div and style before rendering to PDF
+        const watermarkHtml = `<div class="saakh-watermark">saakh report</div>`;
+        const watermarkCss = `
+.saakh-watermark {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 4rem;
+  color: rgba(180,180,180,0.18);
+  z-index: 9999;
+  pointer-events: none;
+  user-select: none;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  white-space: nowrap;
+}
+`;
+
+        html = html.replace('</head>', `<style>${cssContent}\n${watermarkCss}</style></head>`);
+        html = html.replace('<body>', `<body>${watermarkHtml}`);
+        html = html.replace('</body>', `<script>${jsContent}</script></body>`);
+
+        // const browser = await puppeteer.launch({
+        //     args: chromium.args,
+        //     defaultViewport: chromium.defaultViewport,
+        //     executablePath: await chromium.executablePath,
+        //     headless: chromium.headless,
+        // });
+        // const page = await browser.newPage();
         const browser = await puppeteer.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,

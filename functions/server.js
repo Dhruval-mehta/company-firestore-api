@@ -166,7 +166,6 @@ process.on('uncaughtException', (error) => {
   process.exit(1);
 });
 
-// module.exports = app;
 exports.saakh_make_app = onRequest({
   region: 'us-central1',
   memory: '1GiB',
