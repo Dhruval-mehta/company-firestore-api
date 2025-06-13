@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const Handlebars = require('handlebars');
-const puppeteer = require('puppeteer');
+const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer-core');
 const { getFirestore } = require('../config/firebase');
-const { alertsListJson } = require('../utils/alertJson');
+const alertsListJson= require('../utils/alertJson');
 
 const downloadPdf = async (req, res) => {
     try {
@@ -477,8 +478,10 @@ const downloadPdf = async (req, res) => {
         html = html.replace('</body>', `<script>${jsContent}</script></body>`);
 
         const browser = await puppeteer.launch({
-            headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath,
+            headless: chromium.headless,
         });
         const page = await browser.newPage();
 
@@ -510,25 +513,35 @@ const downloadPdf = async (req, res) => {
 
         await browser.close();
 
-        res.setHeader("Content-Type", "application/pdf");
-        res.setHeader(
-            "Content-Disposition",
-            `inline; filename="${company.name?.replace(/[^a-z0-9]/gi, "_") || "report"}.pdf"`
-        );
+        // Debug: log PDF buffer size
+        console.log("PDF buffer size:", pdfBuffer.length);
 
-        // Save PDF locally
+        // Save PDF locally with a unique filename (companyId + timestamp)
         const outputDir = path.join(__dirname, '../assets/reports');
         if (!fs.existsSync(outputDir)) {
             fs.mkdirSync(outputDir, { recursive: true });
         }
-        const outputPath = path.join(outputDir, `${company.name?.replace(/[^a-z0-9]/gi, "_") || "report"}.pdf`);
+        const safeCompanyName = company.name?.replace(/[^a-z0-9]/gi, "_") || "report";
+        const timestamp = Date.now();
+        const outputPath = path.join(outputDir, `${safeCompanyName}_${companyId}_${timestamp}.pdf`);
         fs.writeFileSync(outputPath, pdfBuffer);
         console.log('PDF saved locally at:', outputPath);
 
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader(
+            "Content-Disposition",
+            `inline; filename="${safeCompanyName}.pdf"`
+        );
+        res.setHeader("Content-Length", pdfBuffer.length);
         res.send(pdfBuffer);
     } catch (error) {
         console.error("Download error:", error);
-        res.status(500).send("Server error while generating PDF.");
+        // For debugging: send error message in response (remove in production)
+        res.status(500).send({
+            message: "Server error while generating PDF.",
+            error: error.message,
+            stack: error.stack
+        });
     }
 }
 

@@ -1,4 +1,4 @@
-const functions = require('firebase-functions');
+const { onRequest } = require('firebase-functions/v2/https');
 const express = require('express');
 // const cors = require('cors');
 const helmet = require('helmet');
@@ -167,4 +167,8 @@ process.on('uncaughtException', (error) => {
 });
 
 // module.exports = app;
-// exports.saakh_make_app = functions.https.onRequest(app);
+exports.saakh_make_app = onRequest({
+  region: 'us-central1',
+  memory: '1GiB',
+  timeoutSeconds: 120
+}, app);

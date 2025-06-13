@@ -1,4 +1,4 @@
-export const alertsListJson = [
+ const alertsListJson = [
     {
         "alert": "isGstFraud",
         "Category": "Defaults & Frauds",
@@ -492,3 +492,5 @@ export const alertsListJson = [
         "Description": "Reports by the International Consortium of Investigative Journalists disclosing details of offshore companies, foundations, and trusts."
     }
 ]
+
+module.exports = alertsListJson;
