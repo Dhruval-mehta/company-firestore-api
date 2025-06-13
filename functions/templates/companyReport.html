@@ -25,6 +25,44 @@
 </script>
 
 <body>
+   <!-- Cover Page - Insert this right after <body> tag -->
+<div class="cover-page" style="page-break-after: always; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: white; padding: 40px;">
+   
+   <!-- Logo Section -->
+   <div class="logo-wrapper" style="margin-bottom: 30px;">
+      <img src="{{logoBase64}}" alt="Saakh Logo" style="width: 80px; height: 80px;">
+   </div>
+   
+   <!-- Main Title -->
+   <h1 style="font-size: 2.5rem; color: #333; margin-bottom: 20px; font-weight: bold;">
+      Saakh Report
+   </h1>
+   
+   <!-- Company Name -->
+   <h2 style="font-size: 1.8rem; color: #5055be; margin: 0 0 40px 0;">
+      {{companyName}}
+   </h2>
+   
+   <!-- Generated Date -->
+   <div style="margin-bottom: 60px;">
+      <p style="font-size: 1.1rem; color: #666; margin: 0;">
+         Generated on {{currentDate}}
+      </p>
+   </div>
+   
+   <!-- Data Sources Grid -->
+   
+<!-- Data Sources Image Section -->
+<!-- <div class="data-sources-image" style="max-width: 600px; width: 100%; margin-top: 40px; display: flex; justify-content: center;">
+   <img src="data:image/png;base64,{{dataSourcesImageBase64}}" alt="Data Sources" style="width: 100%; max-width: 500px; height: auto; border-radius: 8px;">
+</div> -->
+
+<div class="data-sources-image" style=" width: 125%; margin-top: 40px; display: flex; justify-content: center;">
+   <img src="{{bgBase64}}" alt="Data Sources" style="width: 125%;  height: auto; border-radius: 8px;">
+</div>
+
+</div>
+<!-- End Cover Page -->
    <div class="report-container">
       <div class="header">
          <div class="logo-wrapper">

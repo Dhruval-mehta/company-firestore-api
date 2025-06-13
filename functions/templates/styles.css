@@ -209,6 +209,9 @@ ul {
     flex-wrap: wrap;
     gap: 12px;
     margin-top: 10px;
+    page-break-inside: avoid;
+
+
 }
 
 .social-media-item {
@@ -321,6 +324,7 @@ ul {
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s, box-shadow 0.3s;
+    page-break-inside: avoid;
 }
 
 .director-card:hover {
@@ -382,7 +386,7 @@ ul {
     padding-bottom: 10px;
     border-bottom: 2px solid #e2e8f0;
     color: #334155;
-}
+/* }
 
 .breakdown-item {
     margin-bottom: 20px;
@@ -421,9 +425,92 @@ ul {
 
 .breakdown-item-value {
     font-weight: 600;
-    color: #5055be;
+    color: #5055be; */
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
+
+.gst-table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.gst-table-container:hover {
+    transform: translateY(-3px);
+}
+
+.gst-services-table, .gst-goods-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.gst-services-table thead, .gst-goods-table thead {
+    background: linear-gradient(135deg, #5055be 0%, #7678ed 100%);
+    color: white;
+}
+
+.gst-services-table th, .gst-goods-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.gst-services-table tbody tr, .gst-goods-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.gst-services-table tbody tr:hover, .gst-goods-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.gst-services-table td, .gst-goods-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.gst-services-table tbody tr:last-child td, .gst-goods-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.gst-percent-cell {
+    font-weight: 500;
+    color: #5055be;
+    text-align: center;
+}
+
+/* Remove the Tailwind classes that were directly in the HTML */
+table.min-w-full, table.table-auto, table.border, table.border-gray-300 {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th.px-4, td.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+th.py-2, td.py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+th.text-left {
+    text-align: left;
+}
+
+th.border-b, td.border-b {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+thead.bg-gray-100 {
+    background-color: #f1f5f9;
+}
 /* Products Section */
 .products-grid {
     display: grid;
@@ -512,6 +599,7 @@ ul {
     padding: 20px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
+    page-break-inside: avoid;
 }
 
 .review-card:hover {
@@ -581,6 +669,7 @@ ul {
     overflow: hidden;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s;
+    page-break-inside: avoid;
 }
 
 .image-card:hover {
@@ -607,6 +696,7 @@ ul {
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s;
+    page-break-inside: avoid;
 }
 
 .competitor-card:hover {
@@ -791,6 +881,66 @@ ul {
     font-weight: 500;
 }
 
+
+/* Credit Section */
+.credit-table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.credit-table-container:hover {
+    transform: translateY(-3px);
+}
+
+.credit-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.credit-table thead {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+}
+
+.credit-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.credit-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.credit-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.credit-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.credit-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.rating-badge {
+    display: inline-block;
+    background-color: #e0e7ff;
+    color: #1e40af;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+
 /* Alerts Section */
 .alerts-section {
     margin-bottom: 30px;
@@ -810,6 +960,7 @@ ul {
     padding: 15px;
     border-left: 3px solid #e2e8f0;
     transition: transform 0.2s;
+    page-break-inside: avoid;
 }
 
 .alert-card:hover {
@@ -1072,6 +1223,39 @@ ul {
     width: 100%;
 }
 
+.revenueTrendChart-container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.revenueTrendChart-title {
+    text-align: center;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.active-loan-graph-container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.active-loan-graph-title{
+    max-width: 1000px;
+    margin: auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* Footer */
 .footer {
     margin-top: 50px;
@@ -1144,7 +1328,7 @@ ul {
     }
 
     .report-container {
-        padding: 10px;
+        padding: 15px;
         box-shadow: none;
     }
 

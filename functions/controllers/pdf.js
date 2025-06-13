@@ -32,6 +32,10 @@ const downloadPdf = async (req, res) => {
         const logoPath = path.join(__dirname, "../assets/images/saakh_1.jpg");
         const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
 
+         // Read the logo file and convert to base64
+        const bgpath = path.join(__dirname, "../assets/images/bg.jpeg");
+        const bgBase64 = fs.readFileSync(bgpath, { encoding: 'base64' });
+
         // Register the 'times' helper for Handlebars
         Handlebars.registerHelper('times', function (n, block) {
             var accum = '';
@@ -214,6 +218,81 @@ const downloadPdf = async (req, res) => {
             }) || [];
 
 
+        // Ensure competitors is always an array
+        let competitorsArr = [];
+        if (Array.isArray(company.competitors)) {
+            competitorsArr = company.competitors;
+        } else if (typeof company.competitors === 'string') {
+            try {
+                const parsed = JSON.parse(company.competitors);
+                if (Array.isArray(parsed)) {
+                    competitorsArr = parsed;
+                }
+            } catch (e) {
+                competitorsArr = [];
+            }
+        }
+
+        // Ensure images is always an array
+        let imagesArr = [];
+        if (Array.isArray(company.images)) {
+            imagesArr = company.images;
+        } else if (typeof company.images === 'string') {
+            try {
+                const parsed = JSON.parse(company.images);
+                if (Array.isArray(parsed)) {
+                    imagesArr = parsed;
+                }
+            } catch (e) {
+                imagesArr = [];
+            }
+        }
+
+        // Ensure products is always an array
+        let productsArr = [];
+        if (Array.isArray(company.products)) {
+            productsArr = company.products;
+        } else if (typeof company.products === 'string') {
+            try {
+                const parsed = JSON.parse(company.products);
+                if (Array.isArray(parsed)) {
+                    productsArr = parsed;
+                }
+            } catch (e) {
+                productsArr = [];
+            }
+        }
+
+        // Ensure reviews is always an array
+        let reviewsArr = [];
+        if (Array.isArray(company.reviews)) {
+            reviewsArr = company.reviews;
+        } else if (typeof company.reviews === 'string') {
+            try {
+                const parsed = JSON.parse(company.reviews);
+                if (Array.isArray(parsed)) {
+                    reviewsArr = parsed;
+                }
+            } catch (e) {
+                reviewsArr = [];
+            }
+        }
+
+        // Ensure social_media is always an array
+        let socialMediaArr = [];
+        if (Array.isArray(company.social_media)) {
+            socialMediaArr = company.social_media;
+        } else if (typeof company.social_media === 'string') {
+            try {
+                const parsed = JSON.parse(company.social_media);
+                if (Array.isArray(parsed)) {
+                    socialMediaArr = parsed;
+                }
+            } catch (e) {
+                socialMediaArr = [];
+            }
+        }
+
         const templateData = {
             companyName: company.name,
             thumbnailUrl: company.thumbnailUrl,
@@ -231,6 +310,7 @@ const downloadPdf = async (req, res) => {
             email: company.email?.join(", "),
             currentDate: new Date().toLocaleDateString(),
             logoBase64: `data:image/jpeg;base64,${logoBase64}`,
+            bgBase64: `data:image/jpeg;base64,${bgBase64}`,
             rating: company.googleRating,
             reviewCount: company.googleRatingCount,
             services: company.natureOfBusiness,
@@ -250,7 +330,7 @@ const downloadPdf = async (req, res) => {
             },
             currentRevenue: currentRevenue,
             currentFinancialYear: currentFinancialYear,
-            reviews: (company.google_reviews || []).map((r) => ({
+            reviews: reviewsArr.map((r) => ({
                 author_name: r.author_name,
                 author_url: r.author_url,
                 profile_photo_url: r.profile_photo_url,
@@ -258,7 +338,7 @@ const downloadPdf = async (req, res) => {
                 time: r.relative_time_description,
                 text: r.text
             })),
-            images: company.images || [],
+            images: imagesArr,
             management: {
                 source: company.management?.source,
                 current: company.management?.current?.map(person => ({
@@ -313,28 +393,26 @@ const downloadPdf = async (req, res) => {
                 ratingTerm: rating.ratingTerm,
                 ratingRationale: rating.ratingRationale
             })) || [],
-            competitors: Array.isArray(company.competitors)
-    ? company.competitors.map(competitor => ({
-        name: competitor.name,
-        address: competitor.address,
-        rating: competitor.rating,
-        ratingCount: competitor.ratingCount,
-        cid: competitor.cid
-    }))
-    : [],
-            products: Array.isArray(company.products)
-    ? company.products.flatMap((category) => {
-        return Array.isArray(category.products)
-            ? category.products.map((p) => ({
-                name: p.name,
-                link: p.link,
-                image: p.image,
-                category: category.category,
-                description: category.description
-            }))
-            : [];
-    })
-    : [],
+            competitors: competitorsArr.map(competitor => ({
+                name: competitor.name,
+                address: competitor.address,
+                rating: competitor.rating,
+                ratingCount: competitor.ratingCount,
+                cid: competitor.cid
+            })),
+            products: Array.isArray(productsArr)
+                ? productsArr.flatMap((category) => {
+                    return Array.isArray(category.products)
+                        ? category.products.map((p) => ({
+                            name: p.name,
+                            link: p.link,
+                            image: p.image,
+                            category: category.category,
+                            description: category.description
+                        }))
+                        : [];
+                })
+                : [],
             gstGoodsDetails: company.gstGoodsDetails?.map(good => ({
                 hsnCode: good.hsnCode,
                 chapter: good.chapter,
