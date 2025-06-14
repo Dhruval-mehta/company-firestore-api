@@ -520,19 +520,17 @@ const downloadPdf = async (req, res) => {
         html = html.replace('<body>', `<body>${watermarkHtml}`);
         html = html.replace('</body>', `<script>${jsContent}</script></body>`);
 
-        // const browser = await puppeteer.launch({
-        //     args: chromium.args,
-        //     defaultViewport: chromium.defaultViewport,
-        //     executablePath: await chromium.executablePath,
-        //     headless: chromium.headless,
-        // });
-        // const page = await browser.newPage();
+       
         const browser = await puppeteer.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath,
             headless: chromium.headless,
         });
+        // const browser = await puppeteer.launch({
+        //     headless: true,
+        //     args: ["--no-sandbox", "--disable-setuid-sandbox"]
+        // });
         const page = await browser.newPage();
 
         await page.setRequestInterception(true);
@@ -550,15 +548,24 @@ const downloadPdf = async (req, res) => {
 
         await page.setContent(html, { waitUntil: "networkidle0" });
 
+        // Add a footer using Puppeteer's PDF footerTemplate option
+        const footerHtml = `
+        <div style="width:100%;font-size:10px;color:#888;text-align:center;padding-bottom:5px;">
+            Copyright © 2025, Mysa Technology Private Limited, All Rights Reserved
+        </div>`;
+
         const pdfBuffer = await page.pdf({
             format: "A4",
             printBackground: true,
             margin: {
                 top: "20px",
                 right: "20px",
-                bottom: "20px",
+                bottom: "50px", // Increased to make space for footer
                 left: "20px"
-            }
+            },
+            displayHeaderFooter: true,
+            footerTemplate: footerHtml,
+            headerTemplate: '<span></span>' // No header
         });
 
         await browser.close();
