@@ -140,13 +140,12 @@
                         <p>{{addresses.[0]}}</p>
                      </div>
                      <div class="detail-item detail-item-full">
-                        <h4>Contact Information</h4>
+                        <h4>Contact Details</h4>
 
                         {{#if phone}}
-                        <div class="contact-block">
-                          <h5 style="margin-bottom: 4px; margin-top: 10px;">Phone</h5>
+                        <div class="contact-info phone">
                           {{#each phone}}
-                          <p class="contact-info" style="margin-bottom: 6px;"><i class="fa-solid fa-phone"></i> {{this}}</p>
+                            <span><i class="fa-solid fa-phone"></i> {{this}}</span>
                           {{/each}}
                         </div>
                         {{/if}}
@@ -254,7 +253,7 @@
       <!-- GST Business Breakdown Section -->
       <div class="section">
          <div class="section-header">
-            <h2>GST Business Breakdowns</h2>
+            <h2>Nature of Business</h2>
             <div class="section-line"></div>
          </div>
          <div class="section-body">
@@ -462,10 +461,12 @@
             </div>
 
             <!-- Revenue Trend Chart -->
+            {{#if financialData.length}}
             <div style="max-width: 1000px; margin: auto;">
                <h3>Revenue Trend (5 Years)</h3>
                <canvas id="revenueTrendChart" height="400"></canvas>
             </div>
+            {{/if}}
 
 
 
@@ -607,7 +608,7 @@
 
 
             <div class="gst-section">
-               <h3 class="section-title">GST Delay Analysis</h3>
+               <h3 class="section-title">GST Delay Details</h3>
 
                {{#if statutoryRegistration}}
                {{#each statutoryRegistration.gst}}
@@ -653,10 +654,13 @@
                 <div id="employee-graph" class="graph-area"></div>
             </div> -->
 
+         <!-- Employee Count Trend Chart -->
+         {{#if employeeCounts.length}}
          <div class="employee-graph-container">
             <h3 class="employee-graph-title">Employee Count Trend</h3>
             <canvas id="employee-graph" class="graph-area" width="800" height="400"></canvas>
          </div>
+         {{/if}}
 
          {{#if creditRatings.length}}
          <div class="section" style="margin-top: 30px;">
