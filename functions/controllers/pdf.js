@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const Handlebars = require('handlebars');
 const chromium = require('chrome-aws-lambda');
-// const puppeteer = require('puppeteer'); // Changed from puppeteer-core to puppeteer
+// const puppeteer = require('puppeteer'); // Use only puppeteer, remove puppeteer-core
 const puppeteer = require('puppeteer-core');
 const { getFirestore } = require('../config/firebase');
 const alertsListJson = require('../utils/alertJson');
@@ -203,7 +203,7 @@ const downloadPdf = async (req, res) => {
 
             for (const quarter of quarters) {
                 let total = 0;
-                for (const charge of company.charges) {
+                for (const charge of chargesArr) {
                     const start = parseDate(charge.dateOfCreation);
                     const end = charge.dateOfSatisfaction ? parseDate(charge.dateOfSatisfaction) : null;
 
@@ -317,6 +317,24 @@ const downloadPdf = async (req, res) => {
             } catch (e) {
                 socialMediaArr = [];
             }
+        }
+
+        // Ensure charges is always an array
+        let chargesArr = [];
+        if (Array.isArray(company.charges)) {
+            chargesArr = company.charges;
+        } else if (typeof company.charges === 'string') {
+            try {
+                const parsed = JSON.parse(company.charges);
+                if (Array.isArray(parsed)) {
+                    chargesArr = parsed;
+                }
+            } catch (e) {
+                chargesArr = [];
+            }
+        } else if (company.charges && typeof company.charges === 'object') {
+            // If it's a non-null object (not array), wrap in array
+            chargesArr = [company.charges];
         }
 
         const templateData = {
@@ -451,7 +469,7 @@ const downloadPdf = async (req, res) => {
                 gstinCount: service.gstinCount,
                 asPercentOfTotalCount: service.asPercentOfTotalCount
             })) || [],
-            charges: company.charges?.map(charge => ({
+            charges: chargesArr.map(charge => ({
                 chargeHolderName: charge.chargeHolderName,
                 amount: charge.amount,
                 dateOfCreation: charge.dateOfCreation,
