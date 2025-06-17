@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const Handlebars = require('handlebars');
 const chromium = require('chrome-aws-lambda');
-const puppeteer = require('puppeteer'); // Changed from puppeteer-core to puppeteer
-// const puppeteer = require('puppeteer-core');
+// const puppeteer = require('puppeteer'); // Changed from puppeteer-core to puppeteer
+const puppeteer = require('puppeteer-core');
 const { getFirestore } = require('../config/firebase');
 const alertsListJson = require('../utils/alertJson');
 
@@ -524,16 +524,16 @@ const downloadPdf = async (req, res) => {
         html = html.replace('</body>', `<script>${jsContent}</script></body>`);
 
 
-        // const browser = await puppeteer.launch({
-        //     args: chromium.args,
-        //     defaultViewport: chromium.defaultViewport,
-        //     executablePath: await chromium.executablePath,
-        //     headless: chromium.headless,
-        // });
         const browser = await puppeteer.launch({
-            headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath,
+            headless: chromium.headless,
         });
+        // const browser = await puppeteer.launch({
+        //     headless: true,
+        //     args: ["--no-sandbox", "--disable-setuid-sandbox"]
+        // });
         const page = await browser.newPage();
 
         await page.setRequestInterception(true);
