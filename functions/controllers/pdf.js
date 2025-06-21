@@ -76,10 +76,39 @@ const downloadPdf = async (req, res) => {
 
         // const currentRevenue = gstEntry?.aggregateTurnovers[gstEntry.aggregateTurnovers.length - 1]?.turnover;
         // const currentFinancialYear = gstEntry?.aggregateTurnovers[gstEntry.aggregateTurnovers.length - 1]?.financialYear;
-        const turnovers = gstEntry?.aggregateTurnovers;
-        const hasTurnovers = Array.isArray(turnovers) && turnovers.length > 0;
-        const currentRevenue = hasTurnovers ? turnovers[turnovers.length - 1].turnover : undefined;
-        const currentFinancialYear = hasTurnovers ? turnovers[turnovers.length - 1].financialYear : undefined;
+        // Find the latest revenue and year from all GST entries, handling both aggregateTurnovers (array) and aggregateTurnover (single value)
+        let currentRevenue = undefined;
+        let currentFinancialYear = undefined;
+        if (Array.isArray(company.statutoryRegistration?.gst)) {
+            let latestYear = null;
+            for (const gstEntry of company.statutoryRegistration.gst) {
+                // Case 1: aggregateTurnovers array
+                if (Array.isArray(gstEntry.aggregateTurnovers) && gstEntry.aggregateTurnovers.length > 0) {
+                    const last = gstEntry.aggregateTurnovers[gstEntry.aggregateTurnovers.length - 1];
+                    if (last && last.turnover && last.financialYear) {
+                        if (!latestYear || last.financialYear > latestYear) {
+                            currentRevenue = last.turnover;
+                            currentFinancialYear = last.financialYear;
+                            latestYear = last.financialYear;
+                        }
+                    }
+                }
+                // Case 2: aggregateTurnover (single value)
+                else if (gstEntry.aggregateTurnover) {
+                    // Try to get a year from dateOfRegistration or similar field
+                    let year = undefined;
+                    if (gstEntry.dateOfRegistration) {
+                        const parts = gstEntry.dateOfRegistration.split("-");
+                        if (parts.length === 3) year = parts[2];
+                    }
+                    if (!latestYear || (year && year > latestYear)) {
+                        currentRevenue = gstEntry.aggregateTurnover;
+                        currentFinancialYear = year || undefined;
+                        latestYear = year || latestYear;
+                    }
+                }
+            }
+        }
         const alertMetadataMap = alertsListJson.reduce((acc, item) => {
             acc[item.alert] = item;
             return acc;
